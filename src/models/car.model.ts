@@ -10,6 +10,7 @@ export class Car {
       year: { type: String, maxlength: 24 },
       color: { type: String, maxlength: 24 },
       mileage: { type: String, maxlength: 24 },
+      image_url: { type: String, maxlength: 1000 },
       user_id: {
         type: Number,
         key: 'foreign',
@@ -21,13 +22,13 @@ export class Car {
     [
       {
         route: '/get-all-cars',
-        method: 'POST',
+        method: 'GET',
         callback: this.getAllCars,
         requireToken: true,
       },
       {
         route: '/get-car-by-id/:id',
-        method: 'POST',
+        method: 'GET',
         callback: this.getCarById,
         requireToken: true,
       },
@@ -45,7 +46,7 @@ export class Car {
       },
       {
         route: '/delete-car/id/:id',
-        method: 'PUT',
+        method: 'DELETE',
         callback: this.deleteCar,
         requireToken: true,
       }
@@ -55,7 +56,6 @@ export class Car {
 
   createCar(model: any) {
     return async (req: Request, res: Response, next: NextFunction) => {
-      console.log("req.body ---> ", req.body)
       let carCtrl = model.controller;
       let resp = await carCtrl.insert(req, null, null);
       res.json({ message: 'Success', resp });
@@ -64,7 +64,6 @@ export class Car {
 
   updateCar(model: any) {
     return async (req: Request, res: Response, next: NextFunction) => {
-      console.log("req.body ---> ", req.body)
       let carCtrl = model.controller;
       let resp = await carCtrl.update(req, null, null);
       res.json({ message: 'Success', resp });
@@ -73,7 +72,6 @@ export class Car {
 
   deleteCar(model: any) {
     return async (req: Request, res: Response, next: NextFunction) => {
-      console.log("req.body ---> ", req.body)
       let carCtrl = model.controller;
       let resp = await carCtrl.remove(req, null, null);
       res.json({ message: 'Success', resp });

@@ -1,3 +1,5 @@
+import {Request, Response, NextFunction } from 'express';
+
 export class Exam {
   _model: any;
   constructor(norm: any) {
@@ -11,7 +13,89 @@ export class Exam {
         onDelete: 'cascade',
         onUpdate: 'cascade'
       },
-    }, 'A table to store exam model', []];
+    }, 'A table to store exam model', 
+    [
+      {
+        route: '/get-all-exams',
+        method: 'GET',
+        callback: this.getAllExams,
+        requireToken: true,
+      },
+      {
+        route: '/get-exam-by-id/:id',
+        method: 'GET',
+        callback: this.getExamById,
+        requireToken: true,
+      },
+      {
+        route: '/create-exam',
+        method: 'POST',
+        callback: this.createExam,
+        requireToken: true,
+      },
+      {
+        route: '/update-exam/id/:id',
+        method: 'PUT',
+        callback: this.updateExam,
+        requireToken: true,
+      },
+      {
+        route: '/delete-exam/id/:id',
+        method: 'DELETE',
+        callback: this.deleteExam,
+        requireToken: true,
+      }
+    ]
+  ];
+  }
+
+  createExam(model: any) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      let examCtrl = model.controller;
+      let resp = await examCtrl.insert(req, null, null);
+      res.json({ message: 'Success', resp });
+    }
+  }
+
+  updateExam(model: any) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      let examCtrl = model.controller;
+      let resp = await examCtrl.update(req, null, null);
+      res.json({ message: 'Success', resp });
+    }
+  }
+
+  deleteExam(model: any) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      let examCtrl = model.controller;
+      let resp = await examCtrl.remove(req, null, null);
+      res.json({ message: 'Success', resp });
+    }
+  }
+
+  getAllExams(model: any) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      req.body = {
+          get: ["*"]
+      }
+      let examCtrl = model.controller;
+      let resp = await examCtrl.get(req, null, null);
+      res.json({ message: 'Success', resp });
+    }
+  }
+
+  getExamById(model: any) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      req.body = {
+          get: ["*"],
+          where: {
+            id: req.params.id
+          }
+      }
+      let examCtrl = model.controller;
+      let resp = await examCtrl.get(req, null, null);
+      res.json({ message: 'Success', resp });
+    }
   }
 
   set model(model: any) {
